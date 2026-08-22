@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Contact{%endblock%}
+{% block content %}
+<div class="container">
+    <h2>Edit Contact</h2>
+    <form id="editForm" method="POST" action="/update">
+
+        <label>Name:</label><br>
+        <input type="text" name="name" value="{{ contact.name }}" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email" value="{{ contact.email }}" required><br><br>
+
+        <label>Message:</label><br>
+        <textarea name="message" required>{{ contact.message }}</textarea><br><br>
+
+        <button type="submit">Update</button>
+    </form>
+    <br>
+    <a href="/contact_list">Back to Contact List</a>
+</div>
+{% endblock %}

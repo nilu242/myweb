@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Contact{%endblock%}
+{% block content %}
+<div class="container">
+    <ul>
+        <li>ID</li>
+        <li>Name</li>
+        <li>Email</li>
+        <li>Message</li>
+        <li>Created At</li>
+        {% for contact in contacts %} 
+        <tr data-id="{{ contact.id }}">
+
+            <li>{{ contact.id }}</li>
+                <li>{{ contact.name }}</li>
+                <li>{{ contact.email }}</li>
+                <li>{{ contact.message }}</li>
+                <li>{{ contact.created_at }}</li>
+                <button onclick="openEditModal({{ contact.id }}, '{{ contact.name }}', '{{ contact.email }}', '{{ contact.message }}')">
+                    Edit
+                </button>
+        </tr> 
+
+
+        {% endfor %}
+         </ul>
+<!-- Edit Contact Modal -->
+<div id="editModal" style="display:none; position:fixed; top:20%; left:30%; background:#fff; padding:20px; border:1px solid #ccc;">
+    <h3>Edit Contact</h3>
+    <form id="editForm">
+        <input type="hidden" name="id" id="editId">
+        <label>Name:</label><br>
+        <input type="text" name="name" id="editName" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email" id="editEmail" required><br><br>
+
+        <label>Message:</label><br>
+        <textarea name="message" id="editMessage" required></textarea><br><br>
+
+        <button type="submit">Update</button>
+        <button type="button" onclick="closeEditModal()">Cancel</button>
+    </form>
+
+</div>
+<div id="toast" style="position:fixed; bottom:20px; right:20px; background:#4CAF50; color:#fff; padding:10px; border-radius:5px; display:none;">
+    Contact updated successfully!
+</div>
+ 
+<script>
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => {
+        toast.style.display = 'none';
+    }, 3000);
+}
+</script>
+
+
+<script>
+    function openEditModal(id, name, email, message) {
+        console.log(openEditModal);
+    document.getElementById('editId').value = id;
+    document.getElementById('editName').value = name;
+    document.getElementById('editEmail').value = email;
+    document.getElementById('editMessage').value = message;
+    document.getElementById('editModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+document.getElementById('editForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch('/update', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Find the row by data-id
+            const row = document.querySelector(`tr[data-id="${formData.get('id')}"]`);
+            if (row) {
+                row.querySelector('.name').textContent = formData.get('name');
+                row.querySelector('.email').textContent = formData.get('email');
+                row.querySelector('.message').textContent = formData.get('message');
+            }
+
+            closeEditModal();
+
+            // Show a toast notification
+            showToast("Contact updated successfully!");
+        } else {
+            showToast("Update failed!");
+        }
+    });
+});
+
+</script>
+
+  
+    <!-- <table border="1" cellpadding="8">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th>Created At</th>
+        </tr>
+        {% for contact in contacts %}
+        <tr>
+            <td>{{ contact[0] }}</td>
+            <td>{{ contact[1] }}</td>
+            <td>{{ contact[2] }}</td>
+            <td>{{ contact[3] }}</td>
+            <td>{{ contact[4] }}</td>
+        </tr>
+        {% endfor %} -->
+
+</div>
+{%endblock%}
