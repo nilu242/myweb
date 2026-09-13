@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, jsonify
 import psycopg2
 import psycopg2.extras
 
-app = Flask('Portfoli')   # Flask constructor  
+app = Flask('__name__')   # Flask constructor  
   
 # A decorator used to tell the application 
 # which URL is associated function 
